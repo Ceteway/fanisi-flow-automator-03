@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,7 +59,7 @@ const ROF5Form = () => {
     const newInstruction: WorkflowInstruction = {
       id: instructionId,
       siteCode: formData.siteCode,
-      siteName: formData.siteLocation,
+      siteName: formData.siteName,
       siteLocation: formData.siteLocation,
       landlordName: formData.landlordName,
       stage: 'document-drafting',

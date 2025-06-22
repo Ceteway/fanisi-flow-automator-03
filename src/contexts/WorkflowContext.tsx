@@ -57,11 +57,12 @@ export const WorkflowProvider = ({ children }: { children: ReactNode }) => {
       priority: "high",
       formData: {},
       generatedDocuments: [],
-      auditTrail: []
+      auditTrail: [],
+      progressReason: "Waiting for landlord to provide additional documentation"
     },
     {
       id: "ROF-2024-002",
-      siteCode: "NBI002",
+      siteCode: "NBI002", 
       siteName: "Karen Gardens",
       siteLocation: "Karen, Nairobi",
       landlordName: "XYZ Holdings Ltd",

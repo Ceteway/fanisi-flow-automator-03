@@ -5,6 +5,7 @@ import { DocumentGenerator, DocumentVariable } from "@/services/documentGenerato
 
 export interface ROF5FormData {
   // Site Details
+  siteName: string;
   siteCode: string;
   siteLocation: string;
   county: string;
@@ -46,6 +47,7 @@ export interface ROF5FormData {
 }
 
 const initialFormData: ROF5FormData = {
+  siteName: "",
   siteCode: "",
   siteLocation: "",
   county: "",
@@ -97,6 +99,7 @@ export const useROF5Form = () => {
   const generateDocumentVariables = (): DocumentVariable[] => {
     return [
       { key: 'current_date', value: new Date().toLocaleDateString() },
+      { key: 'site_name', value: formData.siteName },
       { key: 'site_code', value: formData.siteCode },
       { key: 'site_location', value: formData.siteLocation },
       { key: 'landlord_name', value: formData.landlordName },
@@ -115,10 +118,10 @@ export const useROF5Form = () => {
 
   const submitForm = () => {
     // Validate required fields
-    if (!formData.siteCode || !formData.siteLocation || !formData.landlordName) {
+    if (!formData.siteName || !formData.siteCode || !formData.siteLocation || !formData.landlordName) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields (Site Code, Location, and Landlord Name)",
+        description: "Please fill in all required fields (Site Name, Site Code, Location, and Landlord Name)",
         variant: "destructive"
       });
       return;
@@ -128,7 +131,7 @@ export const useROF5Form = () => {
     const newInstruction: WorkflowInstruction = {
       id: `ROF-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`,
       siteCode: formData.siteCode,
-      siteName: formData.siteLocation,
+      siteName: formData.siteName,
       siteLocation: formData.siteLocation,
       landlordName: formData.landlordName,
       stage: 'document-drafting',
@@ -145,7 +148,7 @@ export const useROF5Form = () => {
         action: 'Instruction Created',
         user: 'Current User',
         timestamp: new Date().toISOString(),
-        details: `ROF 5 form submitted for ${formData.siteLocation}`
+        details: `ROF 5 form submitted for ${formData.siteName} - ${formData.siteCode}`
       }]
     };
 

@@ -19,6 +19,16 @@ const SiteInformationSection = ({ formData, onInputChange }: SiteInformationSect
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
+          <Label htmlFor="siteName">Site Name *</Label>
+          <Input
+            id="siteName"
+            value={formData.siteName}
+            onChange={(e) => onInputChange("siteName", e.target.value)}
+            placeholder="e.g., Westlands Plaza"
+            required
+          />
+        </div>
+        <div>
           <Label htmlFor="siteCode">Site Code *</Label>
           <Input
             id="siteCode"
