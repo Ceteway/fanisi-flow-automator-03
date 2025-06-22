@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -141,7 +140,7 @@ const DarkWorkflowDashboard = () => {
                     {getPriorityIcon(instruction.priority)}
                     <div>
                       <p className="font-medium text-white">{instruction.id}</p>
-                      <p className="text-xs text-slate-400">{instruction.siteLocation} - {instruction.siteCode}</p>
+                      <p className="text-xs text-slate-400">{instruction.siteName} - {instruction.siteCode}</p>
                     </div>
                   </div>
 

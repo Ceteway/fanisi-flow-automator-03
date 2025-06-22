@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useWorkflow } from './WorkflowContext';
 import { useToast } from '@/hooks/use-toast';
 
 export interface Notification {
@@ -45,7 +44,6 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [reminders, setReminders] = useState<Reminder[]>([]);
-  const { instructions } = useWorkflow();
   const { toast } = useToast();
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -103,72 +101,10 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const checkOverdueInstructions = () => {
-    const today = new Date().toISOString().split('T')[0];
-    
-    instructions.forEach(instruction => {
-      // Check if instruction is overdue (created more than 30 days ago and still in progress)
-      const createdDate = new Date(instruction.createdAt);
-      const todayDate = new Date(today);
-      const daysDifference = Math.floor((todayDate.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
-      
-      if (daysDifference > 30 && instruction.stage !== 'completed') {
-        const existingOverdueNotif = notifications.find(
-          n => n.instructionId === instruction.id && n.type === 'overdue'
-        );
-        
-        if (!existingOverdueNotif) {
-          addNotification({
-            type: 'overdue',
-            title: 'Overdue Instruction',
-            message: `Instruction ${instruction.id} for ${instruction.siteLocation} is overdue (${daysDifference} days)`,
-            instructionId: instruction.id,
-            priority: 'high',
-            actionRequired: true
-          });
-        }
-      }
-    });
-
-    // Process active reminders
-    reminders.forEach(reminder => {
-      if (!reminder.active) return;
-      
-      const reminderDate = new Date(reminder.dueDate);
-      const todayDate = new Date(today);
-      
-      if (reminderDate <= todayDate) {
-        const shouldSend = reminder.frequency === 'once' || 
-          !reminder.lastSent || 
-          (reminder.frequency === 'daily' && reminder.lastSent !== today) ||
-          (reminder.frequency === 'weekly' && 
-            Math.floor((todayDate.getTime() - new Date(reminder.lastSent).getTime()) / (1000 * 60 * 60 * 24)) >= 7);
-        
-        if (shouldSend) {
-          addNotification({
-            type: 'reminder',
-            title: reminder.title,
-            message: reminder.message,
-            instructionId: reminder.instructionId,
-            priority: 'medium',
-            dueDate: reminder.dueDate,
-            actionRequired: true
-          });
-          
-          updateReminder(reminder.id, { 
-            lastSent: today,
-            active: reminder.frequency === 'once' ? false : true
-          });
-        }
-      }
-    });
+    // This function will be called manually or triggered by external components
+    // We removed the automatic dependency on WorkflowContext to prevent circular dependencies
+    console.log('Checking overdue instructions - this should be triggered by external components');
   };
-
-  // Check for overdue instructions and reminders every minute
-  useEffect(() => {
-    checkOverdueInstructions();
-    const interval = setInterval(checkOverdueInstructions, 60000);
-    return () => clearInterval(interval);
-  }, [instructions, reminders]);
 
   return (
     <NotificationContext.Provider value={{

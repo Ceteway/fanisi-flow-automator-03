@@ -4,6 +4,7 @@ import { useUser } from './UserContext';
 export interface WorkflowInstruction {
   id: string;
   siteCode: string;
+  siteName: string;
   siteLocation: string;
   landlordName: string;
   stage: 'document-drafting' | 'execution' | 'registration' | 'completed';
@@ -44,6 +45,7 @@ export const WorkflowProvider = ({ children }: { children: ReactNode }) => {
     {
       id: "ROF-2024-001",
       siteCode: "NBI001",
+      siteName: "Westlands Plaza",
       siteLocation: "Westlands, Nairobi",
       landlordName: "ABC Properties Ltd",
       stage: "document-drafting",
@@ -60,6 +62,7 @@ export const WorkflowProvider = ({ children }: { children: ReactNode }) => {
     {
       id: "ROF-2024-002",
       siteCode: "NBI002",
+      siteName: "Karen Gardens",
       siteLocation: "Karen, Nairobi",
       landlordName: "XYZ Holdings Ltd",
       stage: "execution",
@@ -76,6 +79,7 @@ export const WorkflowProvider = ({ children }: { children: ReactNode }) => {
     {
       id: "ROF-2024-003",
       siteCode: "NBI003",
+      siteName: "Kilimani Tower",
       siteLocation: "Kilimani, Nairobi",
       landlordName: "Prime Estates",
       stage: "registration",
@@ -92,6 +96,7 @@ export const WorkflowProvider = ({ children }: { children: ReactNode }) => {
     {
       id: "ROF-2024-004",
       siteCode: "NBI004",
+      siteName: "Central Plaza",
       siteLocation: "CBD, Nairobi",
       landlordName: "Central Plaza Ltd",
       stage: "completed",
