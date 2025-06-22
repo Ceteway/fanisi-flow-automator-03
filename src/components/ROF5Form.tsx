@@ -1,19 +1,13 @@
+
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { FileText, Zap } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useROF5Form } from "@/hooks/useROF5Form";
 import { useWorkflow, WorkflowInstruction } from "@/contexts/WorkflowContext";
 import { DocumentGenerator } from "@/services/documentGenerator";
 import { AIService } from "@/services/aiService";
-import SiteInformationSection from "@/components/ROF5/SiteInformationSection";
-import TitleDetailsSection from "@/components/ROF5/TitleDetailsSection";
-import LandlordInformationSection from "@/components/ROF5/LandlordInformationSection";
-import LeaseTermsSection from "@/components/ROF5/LeaseTermsSection";
-import DocumentsReceivedSection from "@/components/ROF5/DocumentsReceivedSection";
-import AdditionalInformationSection from "@/components/ROF5/AdditionalInformationSection";
+import FormHeader from "@/components/ROF5/FormHeader";
+import FormSections from "@/components/ROF5/FormSections";
+import FormActions from "@/components/ROF5/FormActions";
 import AISuggestions from "@/components/AISuggestions";
 
 const ROF5Form = () => {
@@ -113,70 +107,18 @@ const ROF5Form = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <FileText className="w-6 h-6" />
-              <span>Request for Opinion Form 5 (ROF 5)</span>
-              <Badge variant="outline" className="ml-2">Property Instruction</Badge>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setAiEnabled(!aiEnabled)}
-                className={aiEnabled ? "bg-blue-50 border-blue-200" : ""}
-              >
-                <Zap className="w-4 h-4 mr-2" />
-                AI {aiEnabled ? "On" : "Off"}
-              </Button>
-            </div>
-          </CardTitle>
-        </CardHeader>
+        <FormHeader 
+          aiEnabled={aiEnabled} 
+          onToggleAI={() => setAiEnabled(!aiEnabled)} 
+        />
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-8">
-                <SiteInformationSection 
-                  formData={formData} 
-                  onInputChange={handleInputChangeWithAI} 
-                />
-                
-                <Separator />
-                
-                <TitleDetailsSection 
-                  formData={formData} 
-                  onInputChange={handleInputChangeWithAI} 
-                />
-                
-                <Separator />
-                
-                <LandlordInformationSection 
-                  formData={formData} 
-                  onInputChange={handleInputChangeWithAI} 
-                />
-                
-                <Separator />
-                
-                <LeaseTermsSection 
-                  formData={formData} 
-                  onInputChange={handleInputChangeWithAI} 
-                />
-                
-                <Separator />
-                
-                <DocumentsReceivedSection 
-                  formData={formData} 
-                  onDocumentCheck={handleDocumentCheck} 
-                />
-                
-                <Separator />
-                
-                <AdditionalInformationSection 
-                  formData={formData} 
-                  onInputChange={handleInputChangeWithAI} 
-                />
-              </div>
+              <FormSections
+                formData={formData}
+                onInputChange={handleInputChangeWithAI}
+                onDocumentCheck={handleDocumentCheck}
+              />
 
               {aiEnabled && (
                 <div className="space-y-4">
@@ -189,15 +131,7 @@ const ROF5Form = () => {
               )}
             </div>
 
-            <div className="flex justify-end space-x-4">
-              <Button type="button" variant="outline">
-                Save as Draft
-              </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                <Zap className="w-4 h-4 mr-2" />
-                Submit ROF 5 & Generate Documents
-              </Button>
-            </div>
+            <FormActions />
           </form>
         </CardContent>
       </Card>
