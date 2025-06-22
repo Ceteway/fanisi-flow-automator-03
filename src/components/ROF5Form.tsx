@@ -60,6 +60,7 @@ const ROF5Form = () => {
     const newInstruction: WorkflowInstruction = {
       id: instructionId,
       siteCode: formData.siteCode,
+      siteName: formData.siteLocation,
       siteLocation: formData.siteLocation,
       landlordName: formData.landlordName,
       stage: 'document-drafting',

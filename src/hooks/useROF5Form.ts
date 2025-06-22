@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { useWorkflow, WorkflowInstruction } from "@/contexts/WorkflowContext";
@@ -129,6 +128,7 @@ export const useROF5Form = () => {
     const newInstruction: WorkflowInstruction = {
       id: `ROF-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`,
       siteCode: formData.siteCode,
+      siteName: formData.siteLocation,
       siteLocation: formData.siteLocation,
       landlordName: formData.landlordName,
       stage: 'document-drafting',
