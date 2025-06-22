@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useUser } from './UserContext';
 
@@ -17,6 +16,7 @@ export interface WorkflowInstruction {
   formData: any;
   generatedDocuments: string[];
   auditTrail: AuditEntry[];
+  progressReason?: string;
 }
 
 export interface AuditEntry {

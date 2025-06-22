@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import { 
   FileText, 
   Clock,
@@ -16,21 +17,33 @@ import {
   Star,
   Activity,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  MessageSquare,
+  Save
 } from "lucide-react";
 import { useWorkflow, WorkflowInstruction } from "@/contexts/WorkflowContext";
 import { useToast } from "@/hooks/use-toast";
-import LocationMap from "@/components/LocationMap";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const DarkWorkflowDashboard = () => {
-  const { instructions, updateInstructionStage } = useWorkflow();
+  const { instructions, updateInstructionStage, updateInstruction } = useWorkflow();
   const { toast } = useToast();
+  const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
+  const [selectedInstructionId, setSelectedInstructionId] = useState<string>("");
+  const [progressReason, setProgressReason] = useState("");
 
   const getStatusColor = (stage: string) => {
     switch (stage) {
@@ -72,11 +85,28 @@ const DarkWorkflowDashboard = () => {
     });
   };
 
+  const handleAddReason = (instructionId: string) => {
+    setSelectedInstructionId(instructionId);
+    const instruction = instructions.find(i => i.id === instructionId);
+    setProgressReason(instruction?.progressReason || "");
+    setReasonDialogOpen(true);
+  };
+
+  const handleSaveReason = () => {
+    if (selectedInstructionId) {
+      updateInstruction(selectedInstructionId, { progressReason });
+      toast({
+        title: "Reason Added",
+        description: "Progress reason has been updated",
+      });
+      setReasonDialogOpen(false);
+      setProgressReason("");
+      setSelectedInstructionId("");
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Map Section */}
-      <LocationMap />
-
       {/* Instructions Table */}
       <Card className="bg-slate-800 border-slate-700 text-white">
         <CardHeader>
@@ -111,19 +141,15 @@ const DarkWorkflowDashboard = () => {
                     {getPriorityIcon(instruction.priority)}
                     <div>
                       <p className="font-medium text-white">{instruction.id}</p>
-                      <p className="text-xs text-slate-400">{instruction.siteCode}</p>
+                      <p className="text-xs text-slate-400">{instruction.siteLocation} - {instruction.siteCode}</p>
                     </div>
                   </div>
 
-                  {/* Location & Landlord */}
-                  <div className="col-span-3">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <MapPin className="w-3 h-3 text-slate-400" />
-                      <p className="text-sm text-white truncate">{instruction.siteLocation}</p>
-                    </div>
+                  {/* Landlord */}
+                  <div className="col-span-2">
                     <div className="flex items-center space-x-2">
                       <User className="w-3 h-3 text-slate-400" />
-                      <p className="text-xs text-slate-400 truncate">{instruction.landlordName}</p>
+                      <p className="text-sm text-white truncate">{instruction.landlordName}</p>
                     </div>
                   </div>
 
@@ -175,7 +201,17 @@ const DarkWorkflowDashboard = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="col-span-2 flex items-center justify-end space-x-2">
+                  <div className="col-span-3 flex items-center justify-end space-x-2">
+                    {instruction.stage !== 'completed' && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-slate-400 hover:text-white"
+                        onClick={() => handleAddReason(instruction.id)}
+                      >
+                        <MessageSquare className="w-4 h-4" />
+                      </Button>
+                    )}
                     <Button 
                       variant="ghost" 
                       size="sm" 
@@ -211,11 +247,57 @@ const DarkWorkflowDashboard = () => {
                     Assigned to: <span className="text-white">{instruction.assignee}</span>
                   </div>
                 </div>
+
+                {/* Progress Reason */}
+                {instruction.progressReason && (
+                  <div className="mt-2 p-3 bg-slate-600/50 rounded border-l-4 border-yellow-500">
+                    <p className="text-xs text-slate-300">
+                      <span className="font-medium text-yellow-400">Reason for delay: </span>
+                      {instruction.progressReason}
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* Add Reason Dialog */}
+      <Dialog open={reasonDialogOpen} onOpenChange={setReasonDialogOpen}>
+        <DialogContent className="bg-slate-800 border-slate-700 text-white">
+          <DialogHeader>
+            <DialogTitle>Add Progress Reason</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-slate-400">
+              Why is this instruction still in progress?
+            </p>
+            <Input
+              value={progressReason}
+              onChange={(e) => setProgressReason(e.target.value)}
+              placeholder="Enter reason for delay or current status..."
+              className="bg-slate-700 border-slate-600 text-white"
+            />
+            <div className="flex justify-end space-x-2">
+              <Button 
+                variant="ghost" 
+                onClick={() => setReasonDialogOpen(false)}
+                className="text-slate-400 hover:text-white"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveReason}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Save
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
